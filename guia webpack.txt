@@ -1,0 +1,214 @@
+Instalar webpack 
+
+1.npm init -y
+
+2.npm install webpack webpack-cli @babel/core @babel/cli @babel/preset-env @babel/polyfill babel-loader html-webpack-plugin webpack-dev-server css-loader style-loader mini-css-extract-plugin
+
+3.creamos archivos webpack.config.js
+
+4.configuracion de webpack 
+
+const path = require("path");
+const HTMLWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+module.exports = {
+  mode: "none",
+  entry: {
+    app: ["@babel/polyfill", "./src/app/scripts/main.js"],
+  },
+  output: {
+    path: path.resolve(__dirname, "build"),
+    filename: "js/app.bundle.js",
+  },
+  devServer: {
+    port: 5050,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/i,
+        loader: "babel-loader",
+      },
+      {
+        test: /\.scss$/i,
+        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+      },
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "[name].[ext]",
+              outputPath: "images",
+            },
+          },
+        ],
+      },
+      {
+        test: /\.html$/i,
+        use: [
+          {
+            loader: "html-loader",
+          }
+        ]
+      },
+    ],
+  },
+  plugins: [
+    new HTMLWebpackPlugin({
+      inject: "body",
+      hash: true,
+      template: "./src/index.html",
+      minify: {
+        collapseWhitespace: true,
+        removeComments: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        useShortDoctype: true,
+      },
+    }),
+    new MiniCssExtractPlugin({
+      filename: "css/app.bundle.css",
+    }),
+  ],
+}
+
+
+instalar sass
+sass sass-loader
+
+
+4.crear archivo index.htnl
+
+5.crear archivo .babelrc
+
+6.instalar el npm i html-loader
+
+7.npm i file-loader
+
+8.colocar los scripts en el package.json
+"start": "webpack --mode development",
+    "build": "webpack --mode production",
+    "dev": "webpack-dev-server --open",
+
+9.ejecutar npm run dev
+
+
+
+
+
+--Configuración de Webpack para múltiples archivos HTML
+
+const path = require("path");
+const HTMLWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+//const sassLoader = require("sass-loader");
+
+module.exports = {
+  mode: "none",
+  entry: {
+    app: ["@babel/polyfill", "./src/app/index.js"],
+    register: ["@babel/polyfill", "./src/app/register.js"],
+    wsp: ["@babel/polyfill", "./src/app/wsp.js"],
+  },
+  output: {
+    path: path.resolve(__dirname, "build"),
+    filename: "js/[name].bundle.js",
+  },
+  devServer: {
+    port: 5050,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/i,
+        loader: "babel-loader",
+      },
+      {
+        test: /\.css$/i,
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
+      },
+      {
+        test: /\.s[ac]ss$/i,
+        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+      },
+    ],
+  },
+  plugins: [
+    new HTMLWebpackPlugin({
+      //   hash: true,
+      //   template: "./src/index.html",
+      //   minify: {
+      //     collapseWhitespace: true,
+      //     removeComments: true,
+      //     removeRedundantAttributes: true,
+      //     removeScriptTypeAttributes: true,
+      //     removeStyleLinkTypeAttributes: true,
+      //     useShortDoctype: true,
+      //   },
+
+      filename: "index.html",
+      template: "./src/index.html",
+      minify: {
+        collapseWhitespace: true,
+        removeComments: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        useShortDoctype: true,
+      },
+      chunks: ["app"],
+    }),
+    new HTMLWebpackPlugin({
+      filename: "register.html",
+      template: "./src/register.html",
+      minify: {
+        collapseWhitespace: true,
+        removeComments: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        useShortDoctype: true,
+      },
+      chunks: ["register"],
+    }),
+    new HTMLWebpackPlugin({
+      filename: "wsp.html",
+      template: "./src/wsp.html",
+      minify: {
+        collapseWhitespace: true,
+        removeComments: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        useShortDoctype: true,
+      },
+      chunks: ["wsp"],
+    }),
+    new MiniCssExtractPlugin({
+      filename: "css/app.bundle.css",
+    }),
+  ],
+};
+
+
+--para deploy con webpack 
+
+npm run build
+
+
+
+--para instalar el gh-pages
+
+1.npm i gh-pages
+
+
+2. esto va en el package.json 
+"homepage": "https://[nombre de usuario].github.io/[nombre del repositorio]"
+
+3.esto va en el scripts
+"deploy": "gh-pages -d [nombre de la carpeta]"
+
+
